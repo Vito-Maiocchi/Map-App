@@ -1,5 +1,6 @@
 package ch.vitomaiocchi.skitourenguru;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
@@ -8,13 +9,20 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class sgGLRenderer implements GLSurfaceView.Renderer {
 
-    private testTriangle triangle;
+    private testSquare triangle;
+
+    Context context;
+
+    public sgGLRenderer(Context context) {
+        super();
+        this.context = context;
+    }
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-        triangle = new testTriangle();
+        triangle = new testSquare(context);
     }
 
     @Override

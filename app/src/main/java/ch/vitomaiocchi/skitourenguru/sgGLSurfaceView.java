@@ -11,7 +11,7 @@ public class sgGLSurfaceView extends GLSurfaceView {
         super(context);
 
         setEGLContextClientVersion(2);
-        renderer = new sgGLRenderer();
+        renderer = new sgGLRenderer(context);
         setRenderer(renderer);
     }
 

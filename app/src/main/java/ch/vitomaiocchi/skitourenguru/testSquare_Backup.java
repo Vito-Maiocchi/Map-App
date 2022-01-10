@@ -1,14 +1,12 @@
 package ch.vitomaiocchi.skitourenguru;
 
 import android.opengl.GLES20;
-import android.opengl.Matrix;
-import android.os.SystemClock;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-public class testTriangle {
+public class testSquare_Backup {
 
 
     private final FloatBuffer mTriangleVertices;
@@ -37,7 +35,7 @@ public class testTriangle {
     /** Size of the color data in elements. */
     private final int mColorDataSize = 4;
 
-    public testTriangle() {
+    public testSquare_Backup() {
         // Define points for equilateral triangles.
 
         // This triangle is red, green, and blue.
