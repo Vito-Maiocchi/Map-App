@@ -88,7 +88,7 @@ public class SurfaceView extends GLSurfaceView {
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            renderer.scale(detector.getScaleFactor());
+            renderer.scale(detector.getScaleFactor(), detector.getFocusX(), detector.getFocusY());
             invalidate();
             return true;
         }
