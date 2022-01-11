@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        glView = new sgGLSurfaceView(this);
+        glView = new SurfaceView(this);
         setContentView(glView);
     }
 }
