@@ -14,36 +14,19 @@ public class testSquare {
 
 
     private final FloatBuffer mTriangleVertices;
-
-    /** This will be used to pass in model position information. */
     private int mPositionHandle;
-
-    /** This will be used to pass in model color information. */
     private int mTextureCoordinateHandle;
-
-    /** How many bytes per float. */
     private final int mBytesPerFloat = 4;
-
-    /** How many elements per vertex. */
     private final int mStrideBytes = 5 * mBytesPerFloat;
-
-    /** Offset of the position data. */
     private final int mPositionOffset = 0;
-
-    /** Size of the position data in elements. */
     private final int mPositionDataSize = 3;
-
-    /** Offset of the color data. */
     private final int mTextureCoordinateOffset = 3;
-
-    /** Size of the color data in elements. */
     private final int mTextureCoordinateDataSize = 2;
-
-    /** This will be used to pass in the texture. */
     private int mTextureUniformHandle;
     private int mTextureDataHandle;
 
     private int matrixHandle;
+    private int vectorHandle;
 
     private int programHandle;
 
@@ -71,9 +54,6 @@ public class testSquare {
                 0.0f, 0.0f
         };
 
-        // This triangle is yellow, cyan, and magenta.
-
-        // Initialize the buffers.
         mTriangleVertices = ByteBuffer.allocateDirect(triangle1VerticesData.length * mBytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
 
@@ -85,12 +65,13 @@ public class testSquare {
                     "attribute vec2 a_TexCoordinate;\n" +
                     "\n" +
                     "uniform mat4 u_Matrix;\n" +
+                    "uniform vec4 u_Vector;\n" +
                     "\n" +
                     "varying vec2 v_TexCoordinate;\n" +
                     "\n" +
                     "void main() {\n" +
                     "    v_TexCoordinate = a_TexCoordinate;\n" +
-                    "    gl_Position = u_Matrix * a_Position;\n" +
+                    "    gl_Position = u_Matrix * ( a_Position + u_Vector );\n" +
                     "}";
 
         final String fragmentShader =
@@ -104,22 +85,15 @@ public class testSquare {
                         "    gl_FragColor = texture2D(u_Texture, v_TexCoordinate);\n" +
                         "}";
 
-        // Load in the vertex shader.
         int vertexShaderHandle = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
 
         if (vertexShaderHandle != 0)
         {
-            // Pass in the shader source.
             GLES20.glShaderSource(vertexShaderHandle, vertexShader);
-
-            // Compile the shader.
             GLES20.glCompileShader(vertexShaderHandle);
-
-            // Get the compilation status.
             final int[] compileStatus = new int[1];
             GLES20.glGetShaderiv(vertexShaderHandle, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
 
-            // If the compilation failed, delete the shader.
             if (compileStatus[0] == 0)
             {
                 GLES20.glDeleteShader(vertexShaderHandle);
@@ -132,22 +106,17 @@ public class testSquare {
             throw new RuntimeException("Error creating vertex shader.");
         }
 
-        // Load in the fragment shader shader.
         int fragmentShaderHandle = GLES20.glCreateShader(GLES20.GL_FRAGMENT_SHADER);
 
         if (fragmentShaderHandle != 0)
         {
-            // Pass in the shader source.
             GLES20.glShaderSource(fragmentShaderHandle, fragmentShader);
 
-            // Compile the shader.
             GLES20.glCompileShader(fragmentShaderHandle);
 
-            // Get the compilation status.
             final int[] compileStatus = new int[1];
             GLES20.glGetShaderiv(fragmentShaderHandle, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
 
-            // If the compilation failed, delete the shader.
             if (compileStatus[0] == 0)
             {
                 GLES20.glDeleteShader(fragmentShaderHandle);
@@ -160,29 +129,22 @@ public class testSquare {
             throw new RuntimeException("Error creating fragment shader.");
         }
 
-        // Create a program object and store the handle to it.
         programHandle = GLES20.glCreateProgram();
 
         if (programHandle != 0)
         {
-            // Bind the vertex shader to the program.
             GLES20.glAttachShader(programHandle, vertexShaderHandle);
 
-            // Bind the fragment shader to the program.
             GLES20.glAttachShader(programHandle, fragmentShaderHandle);
 
-            // Bind attributes
             GLES20.glBindAttribLocation(programHandle, 0, "a_Position");
             GLES20.glBindAttribLocation(programHandle, 1, "a_TexCoordinate");
 
-            // Link the two shaders together into a program.
             GLES20.glLinkProgram(programHandle);
 
-            // Get the link status.
             final int[] linkStatus = new int[1];
             GLES20.glGetProgramiv(programHandle, GLES20.GL_LINK_STATUS, linkStatus, 0);
 
-            // If the link failed, delete the program.
             if (linkStatus[0] == 0)
             {
                 GLES20.glDeleteProgram(programHandle);
@@ -195,21 +157,21 @@ public class testSquare {
             throw new RuntimeException("Error creating program.");
         }
 
-        // Set program handles. These will later be used to pass in values to the program.
         mPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         mTextureCoordinateHandle = GLES20.glGetAttribLocation(programHandle, "a_TexCoordinate");
 
         mTextureDataHandle = loadTexture(context, R.drawable.pop_cat);
 
-        // Tell OpenGL to use this program when rendering.
         GLES20.glUseProgram(programHandle);
     }
 
-    public void draw(float[] matrix) {
+    public void draw(float[] matrix, float[] vector) {
 
         matrixHandle = GLES20.glGetUniformLocation(programHandle, "u_Matrix");
-
         GLES20.glUniformMatrix4fv(matrixHandle, 1, false, matrix, 0);
+
+        vectorHandle = GLES20.glGetUniformLocation(programHandle, "u_Vector");
+        GLES20.glUniform4f(vectorHandle, vector[0], vector[1], 0, 0);
 
         drawTriangle(mTriangleVertices);
 
@@ -220,30 +182,24 @@ public class testSquare {
 
         mTextureUniformHandle = GLES20.glGetUniformLocation(programHandle, "u_Texture");
 
-        // Set the active texture unit to texture unit 0.
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 
-        // Bind the texture to this unit.
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
 
-        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
         GLES20.glUniform1i(mTextureUniformHandle, 0);
 
-        // Pass in the position information
         aTriangleBuffer.position(mPositionOffset);
         GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false,
                 mStrideBytes, aTriangleBuffer);
 
         GLES20.glEnableVertexAttribArray(mPositionHandle);
 
-        // Pass in the color information
         aTriangleBuffer.position(mTextureCoordinateOffset);
         GLES20.glVertexAttribPointer(mTextureCoordinateHandle, mTextureCoordinateDataSize, GLES20.GL_FLOAT, false,
                 mStrideBytes, aTriangleBuffer);
 
         GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle);
 
-        //GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 6);
     }
 
