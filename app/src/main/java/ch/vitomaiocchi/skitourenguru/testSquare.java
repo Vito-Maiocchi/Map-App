@@ -43,6 +43,8 @@ public class testSquare {
     private int mTextureUniformHandle;
     private int mTextureDataHandle;
 
+    private int matrixHandle;
+
     private int programHandle;
 
     public testSquare(Context context) {
@@ -50,23 +52,23 @@ public class testSquare {
         final float[] triangle1VerticesData = {
 
                 -0.5f, -0.5f, 0.0f,
-                0.0f, 0.0f,
-
-                0.5f, -0.5f, 0.0f,
-                1.0f, 0.0f,
-
-                -0.5f, 0.5f, 0.0f,
                 0.0f, 1.0f,
 
-
                 0.5f, -0.5f, 0.0f,
-                1.0f, 0.0f,
-
-                0.5f, 0.5f, 0.0f,
                 1.0f, 1.0f,
 
                 -0.5f, 0.5f, 0.0f,
-                0.0f, 1.0f
+                0.0f, 0.0f,
+
+
+                0.5f, -0.5f, 0.0f,
+                1.0f, 1.0f,
+
+                0.5f, 0.5f, 0.0f,
+                1.0f, 0.0f,
+
+                -0.5f, 0.5f, 0.0f,
+                0.0f, 0.0f
         };
 
         // This triangle is yellow, cyan, and magenta.
@@ -79,15 +81,17 @@ public class testSquare {
 
 
         final String vertexShader =
-                        "attribute vec4 a_Position;\n" +
-                        "attribute vec2 a_TexCoordinate;\n" +
-                        "\n" +
-                        "varying vec2 v_TexCoordinate;\n" +
-                        "\n" +
-                        "void main() {\n" +
-                        "    v_TexCoordinate = a_TexCoordinate;\n" +
-                        "    gl_Position = a_Position;\n" +
-                        "}";
+            "attribute vec4 a_Position;\n" +
+                    "attribute vec2 a_TexCoordinate;\n" +
+                    "\n" +
+                    "uniform mat4 u_Matrix;\n" +
+                    "\n" +
+                    "varying vec2 v_TexCoordinate;\n" +
+                    "\n" +
+                    "void main() {\n" +
+                    "    v_TexCoordinate = a_TexCoordinate;\n" +
+                    "    gl_Position = u_Matrix * a_Position;\n" +
+                    "}";
 
         final String fragmentShader =
                         "precision mediump float;\n" +
@@ -197,12 +201,15 @@ public class testSquare {
 
         mTextureDataHandle = loadTexture(context, R.drawable.pop_cat);
 
-
         // Tell OpenGL to use this program when rendering.
         GLES20.glUseProgram(programHandle);
     }
 
-    public void draw() {
+    public void draw(float[] matrix) {
+
+        matrixHandle = GLES20.glGetUniformLocation(programHandle, "u_Matrix");
+
+        GLES20.glUniformMatrix4fv(matrixHandle, 1, false, matrix, 0);
 
         drawTriangle(mTriangleVertices);
 
@@ -210,6 +217,7 @@ public class testSquare {
 
     private void drawTriangle(final FloatBuffer aTriangleBuffer)
     {
+
         mTextureUniformHandle = GLES20.glGetUniformLocation(programHandle, "u_Texture");
 
         // Set the active texture unit to texture unit 0.
