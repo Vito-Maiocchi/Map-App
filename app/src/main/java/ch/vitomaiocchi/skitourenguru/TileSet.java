@@ -20,7 +20,7 @@ public class TileSet {
             3571428.57143f,
             2678571.42857f,
             2321428.57143f,
-            1785714.28571f,
+            1785714.28571f, //15
             892857.142857f,
             357142.857143f,
             178571.428571f,
@@ -34,11 +34,11 @@ public class TileSet {
             1785.71428571f,
             892.857142857f};
 
-    public static final float[] TopLeftCorner = {420000.0f, 350000.0f};
+    public static final vector TopLeftCorner = new vector(420000.0f, 350000.0f);
 
-    public static final int[] MatrixWidth = {1,1,1,1,1,1,1,1,1,2,2,2,2,3,3,4,8,19,38,94,188,375,750,938,1250,1875,3750,7500};
+    public static final int[] MatrixWidth =     {1,1,1,1,1,1,1,1,1,2,2,2,2,3,3,4,8,19,38,94,188,375,750,938,1250,1875,3750,7500}; // min:15
 
-    public static final int[] MatrixHeight = {1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,3,5,13,25,63,125,250,500,625,834,1250,2500,5000};
+    public static final int[] MatrixHeight =    {1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,3,5,13,25,63,125,250,500,625,834,1250,2500,5000};
 
     public static final int TileDimensions = 256;
 

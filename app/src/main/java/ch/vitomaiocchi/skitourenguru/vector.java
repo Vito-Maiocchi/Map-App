@@ -10,25 +10,6 @@ public class vector {
         this.y = y;
     }
 
-    /*
-    public vector add(vector vector) {
-        return new vector(x + vector.x, y + vector.y);
-    }
-
-    public vector add(float x, float y) {
-        return new vector(x + this.x, y + this.y);
-    }
-
-    public vector scale(vector vector) { // by component
-        return new vector(x* vector.x, y * vector.y);
-    }
-
-    public vector scale(float x, float y) {
-        return new vector(this.x * x, this.y * y);
-    }
-
-     */
-
     public vector add(vector vector) {
         x = x + vector.x;
         y = y + vector.y;

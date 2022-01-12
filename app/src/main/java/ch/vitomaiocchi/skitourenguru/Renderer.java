@@ -21,8 +21,8 @@ public class Renderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
         map = new Map();
-        pos = new vector(0, 0);
-        scale = 1;
+        pos = new vector(420000.0f, 350000.0f);
+        scale = 6250000;
     }
 
     @Override
