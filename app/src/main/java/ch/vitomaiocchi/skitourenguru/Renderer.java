@@ -35,7 +35,7 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
-        map.draw(pos, scale, ratio);
+        map.draw(new vector(pos.x, pos.y), scale, ratio);
     }
 
     public void move(vector pos) {
