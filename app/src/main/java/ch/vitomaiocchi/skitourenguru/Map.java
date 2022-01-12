@@ -23,21 +23,26 @@ public class Map {
         image2 = new Image(url2);
     }
 
-    public void draw(float posX, float posY, float scale, float ratio) {
+    public void draw(vector pos, float scale, float ratio) {
         //scale = width of the screen
         //ratio = height relative to the width
 
-        scale = scale / 2;
-
         float[] matrix = new float[]{
-                1/scale, 0, 0, 0,
-                0, 1/(scale*ratio), 0, 0,
+                2/scale, 0, 0, 0,
+                0, 2/scale/ratio, 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1
         };
 
-        image.draw(matrix, new float[]{posX/scale,posY/(scale*ratio)});
-        image2.draw(matrix, new float[]{(1.5f + posX)/scale, (1 + posY)/(scale*ratio)});
+        image.draw(matrix, new float[]{(0.0f - pos.x) * 2   /scale , pos.y *2/ratio/scale});
+        image2.draw(matrix, new float[]{(1.0f - pos.x) * 2  /scale , pos.y * 2/ratio/scale});
+        image.draw(matrix, new float[]{(1.0f - pos.x) * 2   /scale , (1.0f + pos.y) *2/ratio/scale});
+        image.draw(matrix, new float[]{(0 - pos.x) * 2      /scale , (1.0f + pos.y) *2/ratio/scale});
+
+        image.draw(matrix, new float[]{(2.0f - pos.x) * 2   /scale , pos.y *2/ratio/scale});
+        image2.draw(matrix, new float[]{(3.0f - pos.x) * 2  /scale , pos.y * 2/ratio/scale});
+        image.draw(matrix, new float[]{(2.0f - pos.x) * 2   /scale , (1.0f + pos.y) *2/ratio/scale});
+        image.draw(matrix, new float[]{(3.0f - pos.x) * 2   /scale , (1.0f + pos.y) *2/ratio/scale});
     }
 
 }

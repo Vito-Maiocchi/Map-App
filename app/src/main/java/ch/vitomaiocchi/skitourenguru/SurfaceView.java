@@ -51,10 +51,10 @@ public class SurfaceView extends GLSurfaceView {
                 final float x = e.getX(pointerIndex);
                 final float y = e.getY(pointerIndex);
 
-                final float dx = x - mLastTouchX;
-                final float dy = y - mLastTouchY;
+                final float dx = mLastTouchX - x;
+                final float dy = mLastTouchY - y;
 
-                renderer.move(dx, dy);
+                renderer.move(new vector(dx, dy));
                 invalidate();
 
                 mLastTouchX = x;
@@ -88,9 +88,15 @@ public class SurfaceView extends GLSurfaceView {
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            renderer.scale(detector.getScaleFactor(), detector.getFocusX(), detector.getFocusY());
+            renderer.scale(detector.getScaleFactor(), new vector(detector.getFocusX(), detector.getFocusY()));
             invalidate();
             return true;
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            renderer.scale_begin(new vector(detector.getFocusX(), detector.getFocusY()));
+            return super.onScaleBegin(detector);
         }
     }
 }
