@@ -31,7 +31,8 @@ public class LevelGrid {
                 screen.add(new intVector(x, y));
             }
 
-        drawTiles(pos, scale, ratio, screen.toArray(new intVector[screen.size()]));
+        intVector[] vectors = screen.toArray(new intVector[screen.size()]);
+        drawTiles(pos, scale, ratio, vectors);
     }
 
     public void drawTiles(vector pos, float scale, float ratio, intVector[] tiles) {
@@ -44,19 +45,26 @@ public class LevelGrid {
                 if (tile == null) {
                     intVector cluster = getCluster(tiles[i]);
                     if (!cluster.containedIn(unloaded)) unloaded.add(cluster);
+                    System.out.println("NEW TILE");
                     this.tiles[tiles[i].x][tiles[i].y] = new Tile(level, tiles[i].x, tiles[i].y);
                 } else if (!tile.isLoaded()) {
                     intVector cluster = getCluster(tiles[i]);
                     if (!cluster.containedIn(unloaded)) unloaded.add(cluster);
                     tile.load();
-                } else loaded.add(tiles[i]);
+                } else {
+                    loaded.add(tiles[i]);
+                }
             }
         }
 
         if (unloaded.size() > 0) {
-            for (intVector tile : loaded) {
-                intVector cluster = getCluster(tile);
-                if (cluster.containedIn(unloaded)) loaded.remove(tile);
+
+            for (int i = 0; i < loaded.size(); i++) {
+                intVector cluster = getCluster(loaded.get(i));
+                if (cluster.containedIn(unloaded)) {
+                    loaded.remove(i);
+                    i--;
+                }
             }
 
             if (level < 15) {

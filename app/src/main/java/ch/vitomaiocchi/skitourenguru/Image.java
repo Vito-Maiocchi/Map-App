@@ -84,7 +84,7 @@ public class Image {
     private int textureDataHandle;
     private int textureUniformHandle;
 
-    public Image(URL image) {
+    public Image(Bitmap bitmap) {
 
         programHandle = GLES20.glCreateProgram();
 
@@ -102,17 +102,6 @@ public class Image {
         final int[] textureArray = new int[1];
         GLES20.glGenTextures(1, textureArray, 0);
         textureDataHandle = textureArray[0];
-
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = false;
-
-        Bitmap bitmap = null;
-        try {
-            InputStream is = image.openStream();
-            bitmap = BitmapFactory.decodeStream(is);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureDataHandle);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
