@@ -20,6 +20,8 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
+        GLES20.glClearColor(0.95f, 0.9f,1.0f, 1);
+
         map = new Map();
         pos = new vector(420000.0f, 350000.0f);
         scale = 6250000;
@@ -35,7 +37,8 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl10) {
-        map.draw(new vector(pos.x, pos.y), scale, ratio);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+       map.draw(new vector(pos.x, pos.y), scale, ratio);
     }
 
     public void move(vector pos) {

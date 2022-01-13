@@ -9,16 +9,23 @@ public class SwissTopo {
     public SwissTopo() {
         Image.createShader();
         levelGrids = new LevelGrid[13];
+
+        last = System.currentTimeMillis();
     }
+
+    long last;
 
     public void draw(vector pos, float scale, float ratio) {
         for (int i = 15; i < TileSet.scale.length; i++) {
-            if (scale > 4 * TileSet.scale[i]) {
+            if (scale > 2 * TileSet.scale[i]) {
                 targetLevel = i;
                 break;
             }
         }
         getLevelGrid(targetLevel).drawScreen(pos, scale, ratio);
+
+        //System.out.println("DELTA DRAW: "+ (System.currentTimeMillis() - last));
+        last = System.currentTimeMillis();
 
     }
 

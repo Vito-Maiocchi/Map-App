@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 public class Tile {
 
-    private static LoaderScheduler loaderScheduler = new LoaderScheduler();
     private LoadState loadState;
 
     private Bitmap bitmap;
@@ -24,8 +23,7 @@ public class Tile {
 
     public Tile(int layer, int x, int y) {
         this.layer = layer;
-        tilePos.x = x;
-        tilePos.y = y;
+        tilePos = new intVector(x,y);
 
         size = TileSet.scale[layer];
         pos = new vector(
@@ -55,16 +53,14 @@ public class Tile {
     public void load() {
         switch (loadState) {
             case UNLOADED:
+                loadState = LoadState.FETCHING_BITMAP;
+                new BitmapFetcher();
                 break;
             case BITMAP_FETCHED:
+                image = new Image(bitmap);
+                loadState = LoadState.LOADED;
                 break;
         }
-
-
-        if (loading) return;
-        loading = true;
-        //new ImageLoader(this);
-        loaderScheduler.schedule(this);
     }
 
     public boolean isLoaded() {
@@ -75,46 +71,45 @@ public class Tile {
         //TODO: unload wenns für performace nötig isch
     }
 
-    private static class LoaderScheduler extends Thread {
+    private class BitmapFetcher extends Thread {
 
-        static ArrayList<Tile> tiles = new ArrayList<>();
-
-        public LoaderScheduler() {
+        public BitmapFetcher() {
             this.start();
-        }
-
-        public void schedule(Tile tile) {
-            tiles.add(tile);
         }
 
         @Override
         public void run() {
-            while (true) {
-                if(tiles.size() > 0) {
-                    System.out.println("LOAD TILE: "+tiles.get(0).layer+"/"+tiles.get(0).tile_y+"/"+tiles.get(0).tile_x);
-                    URL url = null;
-                    try {
-                        url = new URL("https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/21781/"+tiles.get(0).layer+"/"+tiles.get(0).tile_y+"/"+tiles.get(0).tile_x+".jpeg");
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-                    tiles.get(0).image = new Image(url);
-                    tiles.get(0).loaded = true;
-                    tiles.get(0).loading = false;
-                    tiles.remove(0);
 
-                    final BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inScaled = false;
-
-                    Bitmap bitmap = null;
-                    try {
-                        InputStream is = image.openStream();
-                        bitmap = BitmapFactory.decodeStream(is);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+            URL url = null;
+            try {
+                url = new URL("https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/21781/"+layer+"/"+tilePos.y+"/"+tilePos.x+".jpeg");
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             }
+
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;
+
+
+            long time = System.currentTimeMillis();
+            long stream_time;
+            long bitmap_time;
+            Bitmap bm;
+            try {
+                InputStream is = url.openStream(); //TODO : BRUCHT MEHRERI SEKUNDE
+                stream_time = System.currentTimeMillis() - time;
+                bm = BitmapFactory.decodeStream(is);
+                bitmap_time = System.currentTimeMillis() - time - stream_time;
+            } catch (IOException e) {
+                loadState = LoadState.UNLOADED;
+                return;
+            }
+            bitmap = bm;
+            loadState = LoadState.BITMAP_FETCHED;
+
+
+            System.out.println("BIT MAP FETCHED IN MILIS:\n  STREAM:  "+stream_time+"\n  BITMAP:  "+bitmap_time);
+
         }
     }
 
