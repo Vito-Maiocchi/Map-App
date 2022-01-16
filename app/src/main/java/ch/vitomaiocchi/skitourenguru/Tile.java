@@ -3,10 +3,16 @@ package ch.vitomaiocchi.skitourenguru;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Connection;
 import java.util.ArrayList;
 
 public class Tile {
@@ -68,7 +74,6 @@ public class Tile {
     }
 
     public void unload() {
-        //TODO: unload wenns für performace nötig isch
     }
 
     private class BitmapFetcher extends Thread {
@@ -80,36 +85,22 @@ public class Tile {
         @Override
         public void run() {
 
-            URL url = null;
             try {
-                url = new URL("https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/21781/"+layer+"/"+tilePos.y+"/"+tilePos.x+".jpeg");
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+                final BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inScaled = false;
 
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inScaled = false;
-
-
-            long time = System.currentTimeMillis();
-            long stream_time;
-            long bitmap_time;
-            Bitmap bm;
-            try {
-                InputStream is = url.openStream(); //TODO : BRUCHT MEHRERI SEKUNDE
-                stream_time = System.currentTimeMillis() - time;
-                bm = BitmapFactory.decodeStream(is);
-                bitmap_time = System.currentTimeMillis() - time - stream_time;
+                URL imageUrl = new URL("https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/21781/" + layer + "/" + tilePos.y + "/" + tilePos.x + ".jpeg");
+                HttpURLConnection conn = (HttpURLConnection) imageUrl.openConnection();
+                conn.setConnectTimeout(30000);
+                conn.setReadTimeout(30000);
+                BufferedInputStream bs = new BufferedInputStream(conn.getInputStream());
+                bitmap = BitmapFactory.decodeStream(bs);
             } catch (IOException e) {
                 loadState = LoadState.UNLOADED;
                 return;
             }
-            bitmap = bm;
+
             loadState = LoadState.BITMAP_FETCHED;
-
-
-            System.out.println("BIT MAP FETCHED IN MILIS:\n  STREAM:  "+stream_time+"\n  BITMAP:  "+bitmap_time);
-
         }
     }
 
