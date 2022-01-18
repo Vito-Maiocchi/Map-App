@@ -89,7 +89,7 @@ public class Tile {
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inScaled = false;
 
-                URL imageUrl = new URL("https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/21781/" + layer + "/" + tilePos.y + "/" + tilePos.x + ".jpeg");
+                URL imageUrl = new URL(TileSet.url + layer + "/" + tilePos.y + "/" + tilePos.x + ".jpeg");
                 HttpURLConnection conn = (HttpURLConnection) imageUrl.openConnection();
                 conn.setConnectTimeout(30000);
                 conn.setReadTimeout(30000);

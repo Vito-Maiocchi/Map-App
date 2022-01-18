@@ -23,7 +23,7 @@ public class Renderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.95f, 0.9f,1.0f, 1);
 
         map = new Map();
-        pos = new vector(420000.0f, 350000.0f);
+        pos = new vector(TileSet.TopLeftCorner.x, TileSet.TopLeftCorner.y);
         scale = 6250000;
     }
 

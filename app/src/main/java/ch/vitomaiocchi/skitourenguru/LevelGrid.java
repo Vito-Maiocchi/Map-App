@@ -71,7 +71,7 @@ public class LevelGrid {
             }
              */
 
-            if (level > 15) {
+            if (level > TileSet.minLevel) {
                 //draw upper level
                 swissTopo.getLevelGrid(level - 1).drawTiles(pos, scale, ratio, unloaded.toArray(new intVector[0]));
             }
@@ -86,6 +86,9 @@ public class LevelGrid {
     }
 
     intVector[] getCluster(intVector tile) {
+
+        if(level <= TileSet.minLevel) return new intVector[0];
+
         float size_new = TileSet.scale[level - 1];
 
         int min_x = (int) Math.floor(tile.x * size / size_new);

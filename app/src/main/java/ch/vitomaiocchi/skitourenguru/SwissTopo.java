@@ -8,7 +8,7 @@ public class SwissTopo {
 
     public SwissTopo() {
         Image.createShader();
-        levelGrids = new LevelGrid[13];
+        levelGrids = new LevelGrid[TileSet.scale.length - TileSet.minLevel];
 
         last = System.currentTimeMillis();
     }
@@ -16,7 +16,7 @@ public class SwissTopo {
     long last;
 
     public void draw(vector pos, float scale, float ratio) {
-        for (int i = 15; i < TileSet.scale.length; i++) {
+        for (int i = TileSet.minLevel; i < TileSet.scale.length; i++) {
             if (scale > 2 * TileSet.scale[i]) {
                 targetLevel = i;
                 break;
@@ -30,8 +30,8 @@ public class SwissTopo {
     }
 
     public LevelGrid getLevelGrid(int level) {
-        if(levelGrids[level - 15] == null) levelGrids[level - 15] = new LevelGrid(level, this);
-        return levelGrids[level - 15];
+        if(levelGrids[level - TileSet.minLevel] == null) levelGrids[level - TileSet.minLevel] = new LevelGrid(level, this);
+        return levelGrids[level - TileSet.minLevel];
     }
 
 }
