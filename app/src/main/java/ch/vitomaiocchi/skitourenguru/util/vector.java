@@ -1,4 +1,4 @@
-package ch.vitomaiocchi.skitourenguru;
+package ch.vitomaiocchi.skitourenguru.util;
 
 public class vector {
 

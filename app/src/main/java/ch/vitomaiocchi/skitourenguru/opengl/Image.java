@@ -1,4 +1,4 @@
-package ch.vitomaiocchi.skitourenguru;
+package ch.vitomaiocchi.skitourenguru.opengl;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

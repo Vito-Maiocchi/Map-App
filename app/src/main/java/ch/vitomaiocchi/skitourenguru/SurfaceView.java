@@ -7,7 +7,7 @@ import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import androidx.core.view.MotionEventCompat;
+import ch.vitomaiocchi.skitourenguru.util.vector;
 
 public class SurfaceView extends GLSurfaceView {
 
@@ -97,6 +97,12 @@ public class SurfaceView extends GLSurfaceView {
         public boolean onScaleBegin(ScaleGestureDetector detector) {
             renderer.scale_begin(new vector(detector.getFocusX(), detector.getFocusY()));
             return super.onScaleBegin(detector);
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            renderer.scale_end();
+            super.onScaleEnd(detector);
         }
     }
 }

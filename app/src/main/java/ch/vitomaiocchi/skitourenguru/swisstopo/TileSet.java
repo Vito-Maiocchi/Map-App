@@ -1,4 +1,6 @@
-package ch.vitomaiocchi.skitourenguru;
+package ch.vitomaiocchi.skitourenguru.swisstopo;
+
+import ch.vitomaiocchi.skitourenguru.util.vector;
 
 public class TileSet {
 
@@ -49,7 +51,7 @@ public class TileSet {
     public static final int TileDimensions = 256;
      */
 
-    public static final String url = "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/21781/";
+    public static final String url = "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/";
 
     public static final int minLevel = 0;
 

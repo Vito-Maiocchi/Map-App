@@ -3,10 +3,11 @@ package ch.vitomaiocchi.skitourenguru;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
-import java.util.Vector;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import ch.vitomaiocchi.skitourenguru.swisstopo.TileSet;
+import ch.vitomaiocchi.skitourenguru.util.vector;
 
 public class Renderer implements GLSurfaceView.Renderer {
 
@@ -24,7 +25,7 @@ public class Renderer implements GLSurfaceView.Renderer {
 
         map = new Map();
         pos = new vector(TileSet.TopLeftCorner.x, TileSet.TopLeftCorner.y);
-        scale = 6250000;
+        scale = 6.25E8f;
     }
 
     @Override
@@ -33,16 +34,18 @@ public class Renderer implements GLSurfaceView.Renderer {
 
         dimensions = new vector(width, height);
         ratio = (float) height / (float) width;
+        map.updateView(pos, scale, ratio);
     }
 
     @Override
     public void onDrawFrame(GL10 gl10) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-       map.draw(new vector(pos.x, pos.y), scale, ratio);
+       map.draw();
     }
 
     public void move(vector pos) {
         this.pos.add( pos.scaleToDimensions(dimensions, scale) );
+        map.updateView(pos,scale,ratio);
     }
 
 
@@ -51,10 +54,16 @@ public class Renderer implements GLSurfaceView.Renderer {
     public void scale(float scale, vector focus) {
         this.scale = this.scale / scale;
         pos.add(vector.subtract(this.focus, focus.transformToDimensions(pos, dimensions, this.scale)));
+        map.updateView(pos, scale, ratio);
     }
 
     public void scale_begin(vector focus) {
         this.focus = focus.transformToDimensions(pos, dimensions, scale);
+        map.scale_start();
+    }
+
+    public void scale_end() {
+        map.scale_end();
     }
 
 }

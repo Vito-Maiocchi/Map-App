@@ -1,6 +1,9 @@
-package ch.vitomaiocchi.skitourenguru;
+package ch.vitomaiocchi.skitourenguru.swisstopo;
 
 import java.util.ArrayList;
+
+import ch.vitomaiocchi.skitourenguru.util.intVector;
+import ch.vitomaiocchi.skitourenguru.util.vector;
 
 public class LevelGrid {
 
@@ -36,6 +39,7 @@ public class LevelGrid {
     }
 
     public void drawTiles(vector pos, float scale, float ratio, intVector[] tiles) {
+        /*
         ArrayList<intVector> unloaded = new ArrayList<>(); //clusters that contain unloaded
         ArrayList<intVector> loaded = new ArrayList<>();   //loaded Tiles
 
@@ -69,7 +73,7 @@ public class LevelGrid {
                     break;
                 }
             }
-             */
+             *
 
             if (level > TileSet.minLevel) {
                 //draw upper level
@@ -83,6 +87,10 @@ public class LevelGrid {
                 this.tiles[v.x][v.y].draw(pos, scale, ratio);
             }
         }
+
+
+         */
+
     }
 
     intVector[] getCluster(intVector tile) {

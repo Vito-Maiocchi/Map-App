@@ -1,4 +1,4 @@
-package ch.vitomaiocchi.skitourenguru;
+package ch.vitomaiocchi.skitourenguru.util;
 
 import java.util.ArrayList;
 
@@ -13,8 +13,7 @@ public class intVector {
     }
 
     public boolean identical(intVector vector) {
-        if (x == vector.x && y == vector.y) return true;
-        return false;
+        return x == vector.x && y == vector.y;
     }
 
     public boolean containedIn(ArrayList<intVector> arrayList) {

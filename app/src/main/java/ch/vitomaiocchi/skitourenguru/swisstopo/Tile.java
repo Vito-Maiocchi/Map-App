@@ -1,26 +1,21 @@
-package ch.vitomaiocchi.skitourenguru;
+package ch.vitomaiocchi.skitourenguru.swisstopo;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Connection;
-import java.util.ArrayList;
+
+import ch.vitomaiocchi.skitourenguru.util.intVector;
+import ch.vitomaiocchi.skitourenguru.opengl.Image;
+import ch.vitomaiocchi.skitourenguru.util.vector;
 
 public class Tile {
 
-    private LoadState loadState;
-
-    private Bitmap bitmap;
-    private Image image;
+    public LoadState loadState;
+    public Image image;
 
     private int layer;
     private float size;
@@ -37,14 +32,11 @@ public class Tile {
                 TileSet.TopLeftCorner.y + (float) tilePos.y * size + size/2
         );
 
-        image = null;
-        bitmap = null;
-        loadState = LoadState.UNLOADED;
         load();
     }
 
     public void draw(vector pos, float scale, float ratio) {
-        if (!isLoaded()) return;
+        if (loadState != LoadState.LOADED) return;
 
         float[] matrix = new float[]{
                 2/scale*size, 0, 0, 0,
@@ -57,25 +49,16 @@ public class Tile {
     }
 
     public void load() {
-        switch (loadState) {
-            case UNLOADED:
-                loadState = LoadState.FETCHING_BITMAP;
-                new BitmapFetcher();
-                break;
-            case BITMAP_FETCHED:
-                image = new Image(bitmap);
-                loadState = LoadState.LOADED;
-                break;
-        }
-    }
-
-    public boolean isLoaded() {
-        return  (loadState == LoadState.LOADED);
+        loadState = LoadState.FETCHING_BITMAP;
+        BitmapFetcher.queue(this);
     }
 
     public void unload() {
+        loadState = LoadState.UNLOADED;
+        image = null;
     }
 
+    /*
     private class BitmapFetcher extends Thread {
 
         public BitmapFetcher() {
@@ -104,7 +87,17 @@ public class Tile {
         }
     }
 
-    private enum LoadState {
-        UNLOADED, FETCHING_BITMAP, BITMAP_FETCHED, LOADED
+     */
+
+    public int getLayer() {
+        return layer;
+    }
+
+    public enum LoadState {
+        UNLOADED, FETCHING_BITMAP, LOADED
+    }
+
+    public intVector getTilePos() {
+        return tilePos;
     }
 }
